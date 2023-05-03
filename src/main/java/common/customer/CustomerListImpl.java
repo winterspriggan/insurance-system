@@ -1,6 +1,8 @@
 package common.customer;
 
 
+import java.util.List;
+
 /**
  * @author imseongbin
  * @version 1.0

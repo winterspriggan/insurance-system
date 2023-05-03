@@ -1,6 +1,8 @@
 package common.employee;
 
 
+import java.util.Date;
+
 /**
  * @author imseongbin
  * @version 1.0

@@ -1,6 +1,8 @@
 package common.contract;
 
 
+import java.util.List;
+
 /**
  * @author imseongbin
  * @version 1.0
@@ -9,7 +11,7 @@ package common.contract;
 public class ContractListImpl implements ContractList {
 
 	private List<Contract> contractList;
-	public Contract m_Contract;
+	public Contract contract;
 
 	public ContractListImpl(){
 

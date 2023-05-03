@@ -1,6 +1,10 @@
 package compensation;
 
 
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
 /**
  * @author junse
  * @version 1.0
@@ -19,9 +23,8 @@ public class Claim {
 	private String location;
 	private File report;
 	private String reviewer;
-	private EReview riview = Reporting;
+	private Review riview = Review.Reviewing;
 	private String type;
-	public EReview m_Review;
 
 	public Claim(){
 

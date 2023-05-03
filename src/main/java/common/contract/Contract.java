@@ -1,6 +1,8 @@
 package common.contract;
 
 
+import java.io.File;
+
 /**
  * @author imseongbin
  * @version 1.0
