@@ -1,31 +1,17 @@
 package common.customer;
 
 
-/**
- * @author imseongbin
- * @version 1.0
- * @created 01-5-2023 ?? 4:49:58
- */
-public interface CustomerList {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-	/**
-	 * 
-	 * @param customer
-	 */
-	public void add(Customer customer);
+public interface CustomerList extends Remote {
 
-	/**
-	 * 
-	 * @param id
-	 */
-	public void delete(int id);
+    public boolean add(Customer customer) throws RemoteException;
 
-	/**
-     * @param id
-     * @return
-     */
-	public Customer retrieve(String id);
+    public boolean remove(String customerId) throws RemoteException;
 
-	public void update();
+    public Customer retrieve(String id) throws RemoteException;
+
+    public boolean update(Customer customer) throws RemoteException;
 
 }

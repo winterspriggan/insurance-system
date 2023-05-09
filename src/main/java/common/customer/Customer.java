@@ -1,47 +1,119 @@
 package common.customer;
 
 
-import java.util.Date;
-
-/**
- * @author imseongbin
- * @version 1.0
- * @created 01-5-2023 ?? 4:49:58
- */
 public class Customer {
 
-	private int age;
-	private String bankAccount;
-	private Date birth;
-	private String familyHistory;
-	private boolean gender;
-	private String healthExaminationRecord;
-	private String id;
-	private String job;
-	private String name;
+    // ids
+    private String customerId;
+    // personal info
+    private String name;
+    private int age;
+    private boolean gender;
+    private String birth;
+    private String job;
+    // insurance info
+    private String bankAccount;
+    private String familyHistory;
+    private String healthExaminationRecord;
 
-	public Customer(){
+    public Customer(String values[]) {
+        setCustomerId(values[0]);
+        setName(values[1]);
+        setAge(Integer.parseInt(values[2]));
+        setGender(values[3].equals("M"));
+        setBirth(values[4]);
+        setJob(values[5]);
+        setBankAccount(values[6]);
+        setFamilyHistory(values[7]);
+        setHealthExaminationRecord(values[8]);
+    }
 
-	}
+    public String getCustomerId() {
+        return customerId;
+    }
 
-	public void finalize() throws Throwable {
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
 
-	}
+    public int getAge() {
+        return age;
+    }
 
-	public boolean createClaim(){
-		return false;
-	}
+    public void setAge(int age) {
+        this.age = age;
+    }
 
-	public boolean payment(){
-		return false;
-	}
+    public boolean isGender() {
+        return gender;
+    }
 
-	public boolean receiveAnAccident(){
-		return false;
-	}
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
 
-	public boolean rewarded(){
-		return false;
-	}
+    public String getBirth() {
+        return birth;
+    }
+
+    public void setBirth(String birth) {
+        this.birth = birth;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(String bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public String getFamilyHistory() {
+        return familyHistory;
+    }
+
+    public void setFamilyHistory(String familyHistory) {
+        this.familyHistory = familyHistory;
+    }
+
+    public String getHealthExaminationRecord() {
+        return healthExaminationRecord;
+    }
+
+    public void setHealthExaminationRecord(String healthExaminationRecord) {
+        this.healthExaminationRecord = healthExaminationRecord;
+    }
+
+    public boolean createClaim() {
+        return false;
+    }
+
+    public boolean payment() {
+        return false;
+    }
+
+    public boolean receiveAnAccident() {
+        return false;
+    }
+
+    public boolean rewarded() {
+        return false;
+    }
 
 }

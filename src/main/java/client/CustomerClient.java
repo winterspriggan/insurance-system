@@ -19,8 +19,11 @@ public class CustomerClient {
 
     public static void main(String[] args) throws IOException {
         if (!connect()) return;
-        while (customer == null)
+        while (customer == null) {
             customer = serverImpl.getCustomer(getStandardInput("Input your Customer ID", reader));
+            if (customer == null)
+                System.out.println("Login failed");
+        }
         while (true) {
             printMenu();
             switch (getStandardInput("Select number", reader)) {
