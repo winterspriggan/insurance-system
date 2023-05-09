@@ -1,4 +1,4 @@
-package marketing;
+package common.employee;
 
 
 import common.employee.Employee;
@@ -10,8 +10,9 @@ import common.employee.Employee;
  */
 public class BusinessEmployee extends Employee {
 
-	public BusinessEmployee(){
 
+	public BusinessEmployee(String[] values) {
+		super(values);
 	}
 
 	public void finalize() throws Throwable {

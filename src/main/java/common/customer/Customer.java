@@ -1,7 +1,9 @@
 package common.customer;
 
 
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable {
 
     // ids
     private String customerId;

@@ -12,7 +12,7 @@ import java.rmi.registry.LocateRegistry;
 
 public class CustomerClient {
 
-    private static final int SERVER_PORT_NUMBER = 30022;
+    private static final int SERVER_PORT_NUMBER = 40022;
     private static Customer customer = null;
     private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static ServerImpl serverImpl;

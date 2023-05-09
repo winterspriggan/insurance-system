@@ -2,7 +2,7 @@ package server;
 
 import common.customer.Customer;
 import common.customer.CustomerList;
-import common.customer.CustomerListImpl;
+import common.employee.EmployeeList;
 import compensation.ClaimList;
 
 import java.rmi.AlreadyBoundException;
@@ -14,9 +14,10 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Server extends UnicastRemoteObject implements ServerImpl {
 
-    private static final int PORT_NUMBER = 30022;
+    private static final int PORT_NUMBER = 40022;
     private static final int CLAIM_LIST_PORT_NUMBER = 20622;
     private static final int CUSTOMER_LIST_PORT_NUMBER = 30645;
+    private static final int EMPLOYEE_LIST_PORT_NUMBER = 20645;
 
     public static void main(String[] args) {
         try {
@@ -29,6 +30,9 @@ public class Server extends UnicastRemoteObject implements ServerImpl {
             customerListImpl = (CustomerList) LocateRegistry.getRegistry("localhost", CUSTOMER_LIST_PORT_NUMBER)
                     .lookup("CUSTOMER_LIST");
             System.out.println("CustomerList is bound!");
+            employeeListImpl = (EmployeeList) LocateRegistry.getRegistry("localhost", EMPLOYEE_LIST_PORT_NUMBER)
+                    .lookup("EMPLOYEE_LIST");
+            System.out.println("EmployeeList is bound!");
         } catch (RemoteException | AlreadyBoundException | NotBoundException e) {
             e.printStackTrace();
             System.out.println("Bind Failed!");
@@ -37,6 +41,7 @@ public class Server extends UnicastRemoteObject implements ServerImpl {
 
     private static ClaimList claimListImpl;
     private static CustomerList customerListImpl;
+    private static EmployeeList employeeListImpl;
 
     public Server() throws RemoteException {
         super();

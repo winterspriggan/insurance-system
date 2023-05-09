@@ -1,56 +1,99 @@
 package common.employee;
 
 
+import common.customer.CustomerListImpl;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-/**
- * @author imseongbin
- * @version 1.0
- * @created 01-5-2023 ?? 4:49:59
- */
-public class EmployeeListImpl implements EmployeeList {
+public class EmployeeListImpl extends UnicastRemoteObject implements EmployeeList {
 
-	private List<Employee> employeeList;
-	public Employee m_Employee;
 
-	public EmployeeListImpl(){
+    private static final int PORT_NUMBER = 20645;
 
-	}
+    public static void main(String[] args) {
+        try {
+            Registry registry = LocateRegistry.createRegistry(PORT_NUMBER);
+            registry.bind("EMPLOYEE_LIST", new EmployeeListImpl());
+            System.out.println("EmployeeList is running!");
+        } catch (RemoteException | AlreadyBoundException e) {
+            e.printStackTrace();
+            System.out.println("Bind Failed!");
+        }
+    }
 
-	public void finalize() throws Throwable {
+    private static final String dbPath = "src/main/java/common/employee/employees";
+    private List<Employee> employeeList;
 
-	}
+    public EmployeeListImpl() throws RemoteException {
+        super();
+        this.employeeList = new ArrayList<>();
+        load();
+    }
 
-	/**
-	 * 
-	 * @param employee
-	 */
-	public void add(Employee employee){
+    private void load() {
+        try {
+            Employee employee = null;
+            String[] values;
+            Scanner scanner = new Scanner(new File(dbPath));
+            while (scanner.hasNextLine()) {
+                values = scanner.nextLine().split(" ");
+                switch (values[4]) {
+                    case "investigator" -> employee = new Investigator(values);
+                }
+                this.employeeList.add(employee);
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	}
+    @Override
+    public boolean add(Employee employee) throws RemoteException {
+        for (Employee element : employeeList) {
+            if (element.getEmployeeId().equals(employee.getEmployeeId()))
+                return false;
+        }
+        this.employeeList.add(employee);
+        return true;
+    }
 
-	/**
-	 * 
-	 * @param id
-	 */
-	public void remove(int id){
+    @Override
+    public boolean remove(String employeeId) throws RemoteException {
+        for (int idx = 0; idx < employeeList.size(); idx++) {
+            if (employeeList.get(idx).getEmployeeId().equals(employeeId)) {
+                this.employeeList.remove(idx);
+                return true;
+            }
+        }
+        return false;
+    }
 
-	}
+    @Override
+    public Employee retrieve(String employeeId) throws RemoteException {
+        for (Employee element : employeeList) {
+            if (element.getEmployeeId().equals(employeeId))
+                return element;
+        }
+        return null;
+    }
 
-	/**
-	 * 
-	 * @param id
-	 */
-	public void retrieve(int id){
-
-	}
-
-	/**
-	 * 
-	 * @param employee
-	 */
-	public void update(Employee employee){
-
-	}
-
+    @Override
+    public boolean update(Employee employee) throws RemoteException {
+        for (int idx = 0; idx < employeeList.size(); idx++) {
+            if (employeeList.get(idx).getEmployeeId().equals(employee.getEmployeeId())) {
+                this.employeeList.set(idx, employee);
+                return true;
+            }
+        }
+        return false;
+    }
 }

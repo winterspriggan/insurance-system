@@ -1,35 +1,17 @@
 package common.employee;
 
 
-/**
- * @author imseongbin
- * @version 1.0
- * @created 01-5-2023 ?? 4:49:59
- */
-public interface EmployeeList {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-	/**
-	 * 
-	 * @param employee
-	 */
-	public void add(Employee employee);
+public interface EmployeeList extends Remote {
 
-	/**
-	 * 
-	 * @param id
-	 */
-	public void remove(int id);
+    public boolean add(Employee employee) throws RemoteException;
 
-	/**
-	 * 
-	 * @param id
-	 */
-	public void retrieve(int id);
+    public boolean remove(String employeeId) throws RemoteException;
 
-	/**
-	 * 
-	 * @param employee
-	 */
-	public void update(Employee employee);
+    public Employee retrieve(String employeeId) throws RemoteException;
+
+    public boolean update(Employee employee) throws RemoteException;
 
 }

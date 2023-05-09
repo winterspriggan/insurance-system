@@ -1,8 +1,12 @@
 package common.customer;
 
 
+import common.employee.Employee;
+import common.employee.Investigator;
 import compensation.ClaimListImpl;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -10,6 +14,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class CustomerListImpl extends UnicastRemoteObject implements CustomerList {
@@ -27,11 +32,23 @@ public class CustomerListImpl extends UnicastRemoteObject implements CustomerLis
         }
     }
 
+    private static final String dbPath = "src/main/java/common/customer/customers";
     private List<Customer> customerList;
 
     public CustomerListImpl() throws RemoteException {
         super();
         this.customerList = new ArrayList<>();
+        load();
+    }
+
+    private void load() {
+        try {
+            Scanner scanner = new Scanner(new File(dbPath));
+            while (scanner.hasNextLine())
+                this.customerList.add(new Customer(scanner.nextLine().split(" ")));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
