@@ -38,11 +38,12 @@ public class CustomerListImpl implements CustomerList {
 	}
 
 	/**
-	 * 
 	 * @param id
+	 * @return
 	 */
-	public void retreive(int id){
+	public Customer retrieve(String id){
 
+		return null;
 	}
 
 	public void update(){

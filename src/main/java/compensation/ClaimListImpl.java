@@ -1,35 +1,71 @@
 package compensation;
 
 
-/**
- * @author junse
- * @version 1.0
- * @created 01-5-2023 ?? 4:49:57
- */
-public interface ClaimListImpl {
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
-	/**
-	 * 
-	 * @param claim
-	 */
-	public boolean add(Claim claim);
+public class ClaimListImpl extends UnicastRemoteObject implements ClaimList {
 
-	/**
-	 * 
-	 * @param claimId
-	 */
-	public boolean remove(String claimId);
+    private static final int PORT_NUMBER = 20622;
 
-	/**
-	 * 
-	 * @param claimId
-	 */
-	public Claim retrieve(String claimId);
+    public static void main(String[] args) {
+        try {
+            Registry registry = LocateRegistry.createRegistry(PORT_NUMBER);
+            registry.bind("CLAIM_LIST", new ClaimListImpl());
+            System.out.println("ClaimList is running!");
+        } catch (RemoteException | AlreadyBoundException e) {
+            e.printStackTrace();
+            System.out.println("Bind Failed!");
+        }
+    }
 
-	/**
-	 * 
-	 * @param claim
-	 */
-	public boolean update(Claim claim);
+    private List<Claim> claimList;
+
+    public ClaimListImpl() throws RemoteException {
+        super();
+        this.claimList = new ArrayList<>();
+    }
+
+    public boolean add(Claim claim) {
+        for (Claim element : claimList) {
+            if (element.getClaimId().equals(claim.getClaimId())) return false;
+        }
+        this.claimList.add(claim);
+        return true;
+    }
+
+
+    public boolean remove(String claimId) {
+        for (int idx = 0; idx < claimList.size(); idx++) {
+            if (claimList.get(idx).getClaimId().equals(claimId)) {
+                this.claimList.remove(idx);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public Claim retrieve(String claimId) {
+        for (Claim element : claimList) {
+            if (element.getClaimId().equals(claimId)) return element;
+        }
+        return null;
+    }
+
+    public boolean update(Claim claim) {
+        for (int idx = 0; idx < claimList.size(); idx++) {
+            if (claimList.get(idx).getClaimId().equals(claim.getClaimId())) {
+                this.claimList.set(idx, claim);
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

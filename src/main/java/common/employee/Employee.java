@@ -11,7 +11,7 @@ import java.util.Date;
 public class Employee {
 
 	private Date birth;
-	private enum department;
+	private String department;
 	private boolean gender;
 	private int id;
 	private String name;

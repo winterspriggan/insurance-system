@@ -16,7 +16,7 @@ public class Customer {
 	private String familyHistory;
 	private boolean gender;
 	private String healthExaminationRecord;
-	private int id;
+	private String id;
 	private String job;
 	private String name;
 

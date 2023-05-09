@@ -21,10 +21,10 @@ public interface CustomerList {
 	public void delete(int id);
 
 	/**
-	 * 
-	 * @param id
-	 */
-	public void retreive(int id);
+     * @param id
+     * @return
+     */
+	public Customer retrieve(String id);
 
 	public void update();
 

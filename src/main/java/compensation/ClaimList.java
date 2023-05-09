@@ -1,54 +1,16 @@
 package compensation;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-/**
- * @author junse
- * @version 1.0
- * @created 01-5-2023 ?? 4:49:57
- */
-public class ClaimList implements ClaimListImpl {
+public interface ClaimList extends Remote {
 
-	private List<Claim> claimList;
-	public Claim m_Claim;
+    public boolean add(Claim claim) throws RemoteException;
 
-	public ClaimList(){
+    public boolean remove(String claimId) throws RemoteException;
 
-	}
+    public Claim retrieve(String claimId) throws RemoteException;
 
-	public void finalize() throws Throwable {
-
-	}
-
-	/**
-	 * 
-	 * @param claim
-	 */
-	public boolean add(Claim claim){
-		return false;
-	}
-
-	/**
-	 * 
-	 * @param claimId
-	 */
-	public boolean remove(String claimId){
-		return false;
-	}
-
-	/**
-	 * 
-	 * @param claimId
-	 */
-	public Claim retrieve(String claimId){
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param claim
-	 */
-	public boolean update(Claim claim){
-		return false;
-	}
+    public boolean update(Claim claim) throws RemoteException;
 
 }
