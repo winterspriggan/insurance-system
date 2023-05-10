@@ -2,7 +2,9 @@ package server;
 
 import common.customer.Customer;
 import common.customer.CustomerList;
+import common.employee.Employee;
 import common.employee.EmployeeList;
+import compensation.Claim;
 import compensation.ClaimList;
 
 import java.rmi.AlreadyBoundException;
@@ -11,6 +13,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
+import java.util.UUID;
 
 public class Server extends UnicastRemoteObject implements ServerImpl {
 
@@ -50,5 +54,25 @@ public class Server extends UnicastRemoteObject implements ServerImpl {
     @Override
     public Customer getCustomer(String customerId) throws RemoteException {
         return customerListImpl.retrieve(customerId);
+    }
+
+    @Override
+    public Employee getEmployee(String employeeId) throws RemoteException {
+        return employeeListImpl.retrieve(employeeId);
+    }
+
+    @Override
+    public List<Claim> getClaims() throws RemoteException {
+        return claimListImpl.retrieveAll();
+    }
+
+    @Override
+    public boolean updateClaim(Claim claim) throws RemoteException {
+        return claimListImpl.update(claim);
+    }
+
+    @Override
+    public boolean createClaim(Claim claim) throws RemoteException {
+        return claimListImpl.add(claim);
     }
 }

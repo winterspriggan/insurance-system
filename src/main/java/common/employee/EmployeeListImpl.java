@@ -48,6 +48,7 @@ public class EmployeeListImpl extends UnicastRemoteObject implements EmployeeLis
                 values = scanner.nextLine().split(" ");
                 switch (values[4]) {
                     case "investigator" -> employee = new Investigator(values);
+                    case "supporter" -> employee = new Supporter(values);
                 }
                 this.employeeList.add(employee);
             }

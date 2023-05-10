@@ -1,6 +1,13 @@
 package compensation;
 
 
+import common.employee.Employee;
+import common.employee.Investigator;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -8,6 +15,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class ClaimListImpl extends UnicastRemoteObject implements ClaimList {
 
@@ -24,11 +32,25 @@ public class ClaimListImpl extends UnicastRemoteObject implements ClaimList {
         }
     }
 
+    private static final String dbPath = "src/main/java/compensation/claims";
     private List<Claim> claimList;
 
     public ClaimListImpl() throws RemoteException {
         super();
         this.claimList = new ArrayList<>();
+        load();
+    }
+
+    private void load() {
+        try {
+            Scanner scanner = new Scanner(new File(dbPath));
+            String[] values;
+            while (scanner.hasNextLine())
+                claimList.add(new Claim(scanner.nextLine().split(" ")));
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean add(Claim claim) {
@@ -36,7 +58,7 @@ public class ClaimListImpl extends UnicastRemoteObject implements ClaimList {
             if (element.getClaimId().equals(claim.getClaimId())) return false;
         }
         this.claimList.add(claim);
-        return true;
+        return insert(claim.toString());
     }
 
 
@@ -58,14 +80,49 @@ public class ClaimListImpl extends UnicastRemoteObject implements ClaimList {
         return null;
     }
 
+    @Override
+    public List<Claim> retrieveAll() throws RemoteException {
+        return claimList;
+    }
+
     public boolean update(Claim claim) {
         for (int idx = 0; idx < claimList.size(); idx++) {
             if (claimList.get(idx).getClaimId().equals(claim.getClaimId())) {
                 this.claimList.set(idx, claim);
-                return true;
+                return update(claim.toString());
             }
         }
         return false;
+    }
+
+    private boolean insert(String record) {
+        try {
+            FileWriter writer = new FileWriter(dbPath, true);
+            writer.write(record + "\n");
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private boolean update(String record) {
+        try {
+            Scanner scanner = new Scanner(new File(dbPath));
+            String dummy = "";
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.split(" ")[0].equals(record.split(" ")[0])) {
+                    dummy += record + "\n";
+                } else dummy += line + "\n";
+            }
+            FileWriter writer = new FileWriter(dbPath, false);
+            writer.write(dummy);
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
 }

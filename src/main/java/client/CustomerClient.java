@@ -1,6 +1,7 @@
 package client;
 
 import common.customer.Customer;
+import compensation.Claim;
 import server.ServerImpl;
 
 import java.io.BufferedReader;
@@ -9,6 +10,7 @@ import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.UUID;
 
 public class CustomerClient {
 
@@ -27,7 +29,8 @@ public class CustomerClient {
         while (true) {
             printMenu();
             switch (getStandardInput("Select number", reader)) {
-                case "1" -> System.out.println("Create new claim");
+                case "1" -> createClaim();
+                default -> System.out.println("Invalid input!");
             }
         }
     }
@@ -51,6 +54,26 @@ public class CustomerClient {
     private static void printMenu() {
         System.out.println("***** Customer Menu *****");
         System.out.println("1. Create new claim");
+    }
+
+    private static void createClaim() throws IOException {
+        String[] values = new String[12];
+        values[0] = UUID.randomUUID().toString();
+        values[1] = customer.getCustomerId();
+        values[2] = "none";
+        values[3] = getStandardInput("Input date", reader);
+        values[4] = getStandardInput("Input type", reader);
+        values[5] = getStandardInput("Input description", reader).replace(" ", "_");
+        values[6] = getStandardInput("Input location", reader).replace(" ", "_");
+        values[7] = "none";
+        values[8] = "0";
+        values[9] = "none";
+        values[10] = "none";
+        values[11] = "Reporting";
+        if (serverImpl.createClaim(new Claim(values)))
+            System.out.println("You have been created new claim successfully!");
+        else
+            System.out.println("You have been failed to create new claim!");
     }
 
 }

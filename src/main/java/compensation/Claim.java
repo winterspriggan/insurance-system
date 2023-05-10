@@ -131,4 +131,13 @@ public class Claim implements Serializable {
     public void setReview(String review) {
         this.review = review;
     }
+
+    @Override
+    public String toString() {
+        return claimId + " " + customerId + " " + employeeId + " " + date + " "
+                + type + " " + description + " " + location + " "
+                + report + " " + compensation + " " + reviewer + " "
+                + isPaid + " " + review;
+    }
+
 }
