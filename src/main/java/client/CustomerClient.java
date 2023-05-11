@@ -10,26 +10,34 @@ import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class CustomerClient {
 
+    // server connection
+    private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT_NUMBER = 40022;
+    private static final String SERVER_NAME = "SERVER";
+    private static ServerImpl serverImpl = null;
+    // client object
     private static Customer customer = null;
-    private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    private static ServerImpl serverImpl;
+    // I/O device
+    private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String[] args) throws IOException {
         if (!connect()) return;
-        while (customer == null) {
-            customer = serverImpl.getCustomer(getStandardInput("Input your Customer ID", reader));
-            if (customer == null)
-                System.out.println("Login failed");
-        }
+        if (!login()) return;
         while (true) {
             printMenu();
             switch (getStandardInput("Select number", reader)) {
                 case "1" -> createClaim();
+                case "x" -> {
+                    System.out.println("System exit....");
+                    return;
+                }
                 default -> System.out.println("Invalid input!");
             }
         }
@@ -37,8 +45,8 @@ public class CustomerClient {
 
     private static boolean connect() {
         try {
-            serverImpl = (ServerImpl) LocateRegistry.getRegistry("localhost", SERVER_PORT_NUMBER)
-                    .lookup("SERVER");
+            serverImpl = (ServerImpl) LocateRegistry.getRegistry(SERVER_HOST, SERVER_PORT_NUMBER)
+                    .lookup(SERVER_NAME);
             return true;
         } catch (RemoteException | NotBoundException e) {
             System.out.println("Server connection error");
@@ -46,14 +54,19 @@ public class CustomerClient {
         }
     }
 
-    private static String getStandardInput(String message, BufferedReader reader) throws IOException {
-        System.out.print(message + "\n" + ">> ");
-        return reader.readLine().trim();
+    private static boolean login() throws IOException {
+        while (customer == null) {
+            String inputId = getStandardInput("Input your Customer ID (Typing 'x' to exit)", reader);
+            if (inputId.equals("x")) return false;
+            if ((customer = serverImpl.getCustomer(inputId)) == null) System.out.println("Login failed");
+        }
+        return true;
     }
 
     private static void printMenu() {
         System.out.println("***** Customer Menu *****");
-        System.out.println("1. Create new claim");
+        System.out.println("1. Create claim");
+        System.out.println("x. Exit");
     }
 
     private static void createClaim() throws IOException {
@@ -61,7 +74,12 @@ public class CustomerClient {
         values[0] = UUID.randomUUID().toString();
         values[1] = customer.getCustomerId();
         values[2] = "none";
-        values[3] = getStandardInput("Input date", reader);
+        while (values[3] == null) {
+            if (!checkDateFormat(values[3] = getStandardInput("Input date (ex : 2023/05/10)", reader))) {
+                values[3] = null;
+                System.out.println("Date format is invalid!");
+            }
+        }
         values[4] = getStandardInput("Input type", reader);
         values[5] = getStandardInput("Input description", reader).replace(" ", "_");
         values[6] = getStandardInput("Input location", reader).replace(" ", "_");
@@ -74,6 +92,22 @@ public class CustomerClient {
             System.out.println("You have been created new claim successfully!");
         else
             System.out.println("You have been failed to create new claim!");
+    }
+
+    private static boolean checkDateFormat(String date) {
+        try {
+            SimpleDateFormat dateFormatParser = new SimpleDateFormat("yyyy/MM/dd");
+            dateFormatParser.setLenient(false);
+            dateFormatParser.parse(date);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    private static String getStandardInput(String message, BufferedReader reader) throws IOException {
+        System.out.print(message + "\n" + ">> ");
+        return reader.readLine().trim();
     }
 
 }

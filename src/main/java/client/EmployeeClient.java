@@ -76,7 +76,8 @@ public class EmployeeClient {
         List<Claim> claims = serverImpl.getClaims();
         System.out.println("< Claim List > ");
         for (Claim claim : claims) {
-            System.out.println(claim.toString());
+            if (claim.getEmployeeId().equals(employee.getEmployeeId()))
+                System.out.println(claim);
         }
         Claim claim = null;
         while (claim == null) {
@@ -128,7 +129,6 @@ public class EmployeeClient {
         claim.setReview(review);
         if (serverImpl.updateClaim(claim)) {
             System.out.println("You have been reviewed claim successfully!");
-            decideCompensation(reader, claim);
         } else
             System.out.println("You have been failed to review claim!");
     }

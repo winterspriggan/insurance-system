@@ -4,6 +4,7 @@ import common.customer.Customer;
 import common.customer.CustomerList;
 import common.employee.Employee;
 import common.employee.EmployeeList;
+import common.employee.Investigator;
 import compensation.Claim;
 import compensation.ClaimList;
 
@@ -13,7 +14,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class Server extends UnicastRemoteObject implements ServerImpl {
@@ -73,6 +76,13 @@ public class Server extends UnicastRemoteObject implements ServerImpl {
 
     @Override
     public boolean createClaim(Claim claim) throws RemoteException {
+        List<Employee> employeeList = employeeListImpl.retrieveAll();
+        List<Employee> investigators = new ArrayList<>();
+        for (Employee employee : employeeList)
+            if (employee.getDepartment().equals("investigator"))
+                investigators.add(employee);
+        claim.setEmployeeId(investigators.get(new Random().nextInt(investigators.size()))
+                .getEmployeeId());
         return claimListImpl.add(claim);
     }
 }

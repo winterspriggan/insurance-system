@@ -88,6 +88,11 @@ public class EmployeeListImpl extends UnicastRemoteObject implements EmployeeLis
     }
 
     @Override
+    public List<Employee> retrieveAll() throws RemoteException {
+        return employeeList;
+    }
+
+    @Override
     public boolean update(Employee employee) throws RemoteException {
         for (int idx = 0; idx < employeeList.size(); idx++) {
             if (employeeList.get(idx).getEmployeeId().equals(employee.getEmployeeId())) {
