@@ -6,7 +6,12 @@ import java.io.Serializable;
 
 public class Investigator extends Employee implements Serializable {
 
-    public Investigator(String[] values) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public Investigator(String[] values) {
         super(values);
     }
 

@@ -2,7 +2,7 @@ package client;
 
 import common.customer.Customer;
 import compensation.Claim;
-import server.ServerImpl;
+import server.Server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class CustomerClient {
     private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT_NUMBER = 40022;
     private static final String SERVER_NAME = "SERVER";
-    private static ServerImpl serverImpl = null;
+    private static Server serverImpl = null;
     // client object
     private static Customer customer = null;
     // I/O device
@@ -45,7 +45,7 @@ public class CustomerClient {
 
     private static boolean connect() {
         try {
-            serverImpl = (ServerImpl) LocateRegistry.getRegistry(SERVER_HOST, SERVER_PORT_NUMBER)
+            serverImpl = (Server) LocateRegistry.getRegistry(SERVER_HOST, SERVER_PORT_NUMBER)
                     .lookup(SERVER_NAME);
             return true;
         } catch (RemoteException | NotBoundException e) {

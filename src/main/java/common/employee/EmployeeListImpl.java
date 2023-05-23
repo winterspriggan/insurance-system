@@ -1,8 +1,6 @@
 package common.employee;
 
 
-import common.customer.CustomerListImpl;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.rmi.AlreadyBoundException;
@@ -17,10 +15,15 @@ import java.util.Scanner;
 public class EmployeeListImpl extends UnicastRemoteObject implements EmployeeList {
 
 
-    private static final int PORT_NUMBER = 20645;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final int PORT_NUMBER = 20649;
 
     public static void main(String[] args) {
         try {
+        	System.setProperty("java.rmi.server.hostname", "localhost");
             Registry registry = LocateRegistry.createRegistry(PORT_NUMBER);
             registry.bind("EMPLOYEE_LIST", new EmployeeListImpl());
             System.out.println("EmployeeList is running!");
@@ -30,7 +33,7 @@ public class EmployeeListImpl extends UnicastRemoteObject implements EmployeeLis
         }
     }
 
-    private static final String dbPath = "src/main/java/common/employee/employees";
+    private static final String dbPath = "common/employee/employees";
     private List<Employee> employeeList;
 
     public EmployeeListImpl() throws RemoteException {
@@ -49,6 +52,8 @@ public class EmployeeListImpl extends UnicastRemoteObject implements EmployeeLis
                 switch (values[4]) {
                     case "investigator" -> employee = new Investigator(values);
                     case "supporter" -> employee = new Supporter(values);
+                    case "developer" -> employee = new Developer(values);
+                    case "contractManager" -> employee = new ContractManager(values);
                 }
                 this.employeeList.add(employee);
             }
@@ -79,7 +84,7 @@ public class EmployeeListImpl extends UnicastRemoteObject implements EmployeeLis
     }
 
     @Override
-    public Employee retrieve(String employeeId) throws RemoteException {
+    public Employee retrieve(String employeeId) throws RemoteException, Exception {
         for (Employee element : employeeList) {
             if (element.getEmployeeId().equals(employeeId))
                 return element;

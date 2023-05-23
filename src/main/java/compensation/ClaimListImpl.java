@@ -19,10 +19,11 @@ import java.util.Scanner;
 
 public class ClaimListImpl extends UnicastRemoteObject implements ClaimList {
 
-    private static final int PORT_NUMBER = 20622;
+    private static final int PORT_NUMBER = 20623;
 
     public static void main(String[] args) {
         try {
+        	System.setProperty("java.rmi.server.hostname", "localhost");
             Registry registry = LocateRegistry.createRegistry(PORT_NUMBER);
             registry.bind("CLAIM_LIST", new ClaimListImpl());
             System.out.println("ClaimList is running!");
@@ -32,7 +33,7 @@ public class ClaimListImpl extends UnicastRemoteObject implements ClaimList {
         }
     }
 
-    private static final String dbPath = "src/main/java/compensation/claims";
+    private static final String dbPath = "compensation/claims";
     private List<Claim> claimList;
 
     public ClaimListImpl() throws RemoteException {

@@ -19,10 +19,12 @@ import java.util.Scanner;
 
 public class CustomerListImpl extends UnicastRemoteObject implements CustomerList {
 
-    private static final int PORT_NUMBER = 30645;
+	private static final long serialVersionUID = 1L;
+	private static final int PORT_NUMBER = 30643;
 
     public static void main(String[] args) {
         try {
+        	System.setProperty("java.rmi.server.hostname", "localhost");
             Registry registry = LocateRegistry.createRegistry(PORT_NUMBER);
             registry.bind("CUSTOMER_LIST", new CustomerListImpl());
             System.out.println("CustomerList is running!");
@@ -32,7 +34,7 @@ public class CustomerListImpl extends UnicastRemoteObject implements CustomerLis
         }
     }
 
-    private static final String dbPath = "src/main/java/common/customer/customers";
+    private static final String dbPath = "common/customer/customers";
     private List<Customer> customerList;
 
     public CustomerListImpl() throws RemoteException {

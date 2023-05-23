@@ -1,5 +1,6 @@
 package server;
 
+import common.contract.ContractList;
 import common.customer.Customer;
 import common.customer.CustomerList;
 import common.employee.Employee;
@@ -7,7 +8,10 @@ import common.employee.EmployeeList;
 import common.employee.Investigator;
 import compensation.Claim;
 import compensation.ClaimList;
+import contract.Product;
+import contract.ProductList;
 
+import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -19,27 +23,47 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class Server extends UnicastRemoteObject implements ServerImpl {
+import claimPayout.ClaimPayout;
+import claimPayout.ClaimPayoutList;
 
-    private static final int PORT_NUMBER = 40022;
-    private static final int CLAIM_LIST_PORT_NUMBER = 20622;
-    private static final int CUSTOMER_LIST_PORT_NUMBER = 30645;
-    private static final int EMPLOYEE_LIST_PORT_NUMBER = 20645;
+public class ServerImpl extends UnicastRemoteObject implements Server {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final int PORT_NUMBER = 40029;
+//    private static final int CLAIM_LIST_PORT_NUMBER = 20623;
+//    private static final int CUSTOMER_LIST_PORT_NUMBER = 30643;
+//    private static final int CONTRACT_LIST_PORT_NUMBER = 30223;
+    private static final int EMPLOYEE_LIST_PORT_NUMBER = 20649;
+    private static final int PRODUCT_LIST_PORT_NUMBER = 40019;
+    private static final int CLAIM_PAYOUT_LIST_PORT_NUMBER = 40013;
 
     public static void main(String[] args) {
         try {
+        	System.setProperty("java.rmi.server.hostname", "localhost");
             Registry registry = LocateRegistry.createRegistry(PORT_NUMBER);
-            registry.bind("SERVER", new Server());
+            registry.bind("SERVER", new ServerImpl());
             System.out.println("Server is running!");
-            claimListImpl = (ClaimList) LocateRegistry.getRegistry("localhost", CLAIM_LIST_PORT_NUMBER)
-                    .lookup("CLAIM_LIST");
-            System.out.println("ClaimList is bound!");
-            customerListImpl = (CustomerList) LocateRegistry.getRegistry("localhost", CUSTOMER_LIST_PORT_NUMBER)
-                    .lookup("CUSTOMER_LIST");
-            System.out.println("CustomerList is bound!");
+//            claimListImpl = (ClaimList) LocateRegistry.getRegistry("localhost", CLAIM_LIST_PORT_NUMBER)
+//                    .lookup("CLAIM_LIST");
+//            System.out.println("ClaimList is bound!");
+//            customerListImpl = (CustomerList) LocateRegistry.getRegistry("localhost", CUSTOMER_LIST_PORT_NUMBER)
+//                    .lookup("CUSTOMER_LIST");
+//            System.out.println("CustomerList is bound!");
             employeeListImpl = (EmployeeList) LocateRegistry.getRegistry("localhost", EMPLOYEE_LIST_PORT_NUMBER)
                     .lookup("EMPLOYEE_LIST");
             System.out.println("EmployeeList is bound!");
+//            contractListImpl = (ContractList) LocateRegistry.getRegistry("localhost", CONTRACT_LIST_PORT_NUMBER)
+//                    .lookup("CONTRACT_LIST");
+//            System.out.println("ContractList is bound!");
+            productListImpl = (ProductList) LocateRegistry.getRegistry("localhost", PRODUCT_LIST_PORT_NUMBER)
+                    .lookup("PRODUCT_LIST");
+            System.out.println("ProductList is bound!");
+            claimPayoutListImpl = (ClaimPayoutList) LocateRegistry.getRegistry("localhost", CLAIM_PAYOUT_LIST_PORT_NUMBER)
+                    .lookup("CLAIM_PAYOUT_LIST");
+            System.out.println("ClaimPayoutList is bound!");
         } catch (RemoteException | AlreadyBoundException | NotBoundException e) {
             e.printStackTrace();
             System.out.println("Bind Failed!");
@@ -49,8 +73,11 @@ public class Server extends UnicastRemoteObject implements ServerImpl {
     private static ClaimList claimListImpl;
     private static CustomerList customerListImpl;
     private static EmployeeList employeeListImpl;
+    private static ProductList productListImpl;
+    private static ContractList contractListImpl;
+    private static ClaimPayoutList claimPayoutListImpl;
 
-    public Server() throws RemoteException {
+    public ServerImpl() throws RemoteException {
         super();
     }
 
@@ -60,8 +87,8 @@ public class Server extends UnicastRemoteObject implements ServerImpl {
     }
 
     @Override
-    public Employee getEmployee(String employeeId) throws RemoteException {
-        return employeeListImpl.retrieve(employeeId);
+    public Employee getEmployee(String employeeId) throws RemoteException, Exception{
+			return employeeListImpl.retrieve(employeeId);
     }
 
     @Override
@@ -85,4 +112,42 @@ public class Server extends UnicastRemoteObject implements ServerImpl {
                 .getEmployeeId());
         return claimListImpl.add(claim);
     }
+
+	@Override
+	public boolean createProduct(String[] values) throws RemoteException {
+		return productListImpl.add(values);
+	}
+
+	@Override
+	public boolean updateProduct(String[] values) throws RemoteException {
+		productListImpl.update(values);
+		return true;
+	}
+	
+	@Override
+	public List<Product> printProduct() throws RemoteException {
+		return productListImpl.retrieveAll();
+	}
+
+	@Override
+	public boolean deleteProduct(String value) throws RemoteException {
+		return productListImpl.delete(value);
+	}
+@Override
+	public Product retrieveProduct(String value) throws RemoteException, Exception {
+		Product retrievedProduct = productListImpl.retrieve(value); 
+		return retrievedProduct;
+	}
+
+@Override
+public List<ClaimPayout> printClaimPayout() throws RemoteException {
+	return claimPayoutListImpl.retrieveAll();
+}
+
+@Override
+public boolean payClaimPayout(String value) throws RemoteException {
+	claimPayoutListImpl.delete(value);
+	return true;
+}
+	
 }
